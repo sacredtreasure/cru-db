@@ -26,15 +26,14 @@ async fn main() {
 
     let response = set_user(&firebase, &user).await;
 
-    let mut users = get_users(&firebase, &response.name).await;
+    let mut user: HashMap<String, User> = get_user(&firebase, &response.name).await;
     println!("{:?}", user);
 
     let users = get_users(&firebase).await;
     println!("{:?}", users);
 
     user.email = "updateuserdata@gmail.com".to_string();
-    let update_user = update_user(&firebase, &response.name, &user);
-
+    let updated_user = update_user(&firebase, &response.name, &user);
     println!("{:?}", updated_user);
 
     delete_user(&firebase, &response.name).await;
@@ -54,7 +53,7 @@ async fn set_user(firebase_client: &Firebase, user: &User) -> Response {
     println!("{:?}", users);
     return users.unwrap();  
 }
-async fn get_user() -> User {
+async fn get_user(firebase_client: &Firebase, id: &String) -> User {
     let firebase = firebase_client.at(&id);
     let user = firebase.get::<User>().await;
     return user.unwrap();
@@ -64,7 +63,7 @@ async fn update_user(firebase_client: &Firebase, id: &String, user: &User) -> Us
    let _user = firebase.update::<User>(&user).await;
    return string_to_user(&_user.unwrap().data); 
 }
-async fn delete_user() {
+async fn delete_user(firebase_client: &Firebase, id: &String) {
     let firebase = firebase_client.at("users").at(&id);
     let _result = firebase.delete().await;
 }
