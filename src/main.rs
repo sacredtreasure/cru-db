@@ -59,14 +59,22 @@ async fn get_user() -> User {
     let user = firebase.get::<User>().await;
     return user.unwrap();
 }
-async fn update_user() -> User {
-
+async fn update_user(firebase_client: &Firebase, id: &String, user: &User) -> User {
+   let firebase = firebase_client.at("users").at(&id);
+   let _user = firebase.update::<User>(&user).await;
+   return string_to_user(&_user.unwrap().data); 
 }
 async fn delete_user() {
-
+    let firebase = firebase_client.at("users").at(&id);
+    let _result = firebase.delete().await;
 }
 
 // convert a string to a response
 fn string_to_response(s: &str) -> Response {
+    serde_json::from_str(s).unwrap()
+}
 
+//convert a string to a user
+fn string_to_user(s) -> User {
+    serde_json::from_str(s).unwrap()
 }
