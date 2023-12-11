@@ -42,3 +42,31 @@ async fn main() {
 
 
 }
+
+async fn set_user(firebase_client: &Firebase, user: &User) -> Response {
+    let firebase = firebase_client.at("users");
+    let _users = firebase.set::<User>(&user).await;
+    return string_to_response(&_users.unwrap().data);
+}
+ async fn get_users() -> HashMap<String, User> {
+    let firebase = firebase_client.at("users");
+    let users = firebase.get::<HashMap<String, User>>().await;
+    println!("{:?}", users);
+    return users.unwrap();  
+}
+async fn get_user() -> User {
+    let firebase = firebase_client.at(&id);
+    let user = firebase.get::<User>().await;
+    return user.unwrap();
+}
+async fn update_user() -> User {
+
+}
+async fn delete_user() {
+
+}
+
+// convert a string to a response
+fn string_to_response(s: &str) -> Response {
+
+}
